@@ -47,3 +47,5 @@ en temps réel.
 
 ![image](https://github.com/salma-SABROU/KAFKA-TP1/assets/129564311/ec6f117f-a501-4126-a357-294ad36d53fe)
 
+# TP :
+![image](https://github.com/salma-SABROU/KAFKA-TP1/assets/129564311/88096c14-8308-4012-8fdd-6d6068b00075)
