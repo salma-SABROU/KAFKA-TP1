@@ -56,8 +56,8 @@ public class PageEventService {
                     .filter((k,v)->v.getDuration()>100)
                     .map((k,v)->new KeyValue<>(v.getName(),0L))
                     .groupBy((k,v)->k,Grouped.with(Serdes.String(),Serdes.Long()))
-                    .windowedBy(TimeWindows.of(windowSize))
-                    .count(Materialized.as("pageCount"))
+                    .windowedBy(TimeWindows.of(Duration.ofSeconds(5)))
+                    .count(Materialized.as("page-count"))
                     .toStream()
                     .map((k,v)->new KeyValue<>("=>"+k.key()+" :: "+k.window().startTime()+k.window().endTime(),v));
         };

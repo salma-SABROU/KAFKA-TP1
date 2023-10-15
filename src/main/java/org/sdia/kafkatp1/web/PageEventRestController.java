@@ -2,11 +2,9 @@ package org.sdia.kafkatp1.web;
 
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Windowed;
-import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.apache.kafka.streams.state.ReadOnlyWindowStore;
+import org.apache.kafka.streams.state.*;
 import org.sdia.kafkatp1.entities.PageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
@@ -26,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
 
 @RestController
 public class PageEventRestController {
@@ -44,24 +43,43 @@ public class PageEventRestController {
 
     @GetMapping(value = "/analytics",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Map<String,Long>> analytics(){
-        return Flux.interval(Duration.ofSeconds(1))
+        return Flux.interval(Duration.ofSeconds(5))
                 .map(seq->{
                     Map<String,Long> stringLongMap=new HashMap<>();
-                    ReadOnlyWindowStore<String, Long> windowStore = interactiveQueryService.getQueryableStore("pageCount", QueryableStoreTypes.windowStore());
+                    ReadOnlyWindowStore<String, Long> windowStore = interactiveQueryService.getQueryableStore("page-count", QueryableStoreTypes.windowStore());
                     Instant now=Instant.now();
-                    Instant from=now.minusMillis(500);
+                    //Instant from=now.minusMillis(50000);
+                    Instant from = now.minusSeconds(50); // Par exemple, 50 secondes en arrière par rapport à "now"
+
                     KeyValueIterator<Windowed<String>,Long> fetchAlls = windowStore.fetchAll(from,now);
                     if(fetchAlls.hasNext()){
                         System.out.println("************************* fetchAlls is not vide *******************************");
                         while (fetchAlls.hasNext()){
                             KeyValue<Windowed<String>, Long> next = fetchAlls.next();
-                            System.out.println("*************************************************************");
-                            System.out.println(" => "+next.value);
-                            System.out.println("*************************************************************");
                             stringLongMap.put(next.key.key(),next.value);
                         }
                     }else{
                         System.out.println("************************* fetchAlls is vide *******************************");
+                    }
+
+                    return stringLongMap;
+                });
+    }
+
+    @GetMapping(value = "/analytics/{page}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Map<String,Long>> analyticsPage(@PathVariable String page){
+        return Flux.interval(Duration.ofSeconds(5))
+                .map(seq->{
+                    Map<String,Long> stringLongMap=new HashMap<>();
+                    ReadOnlyWindowStore<String, Long> windowStore = interactiveQueryService.getQueryableStore("page-count", QueryableStoreTypes.windowStore());
+                    Instant now=Instant.now();
+                    Instant from = now.minusSeconds(50); // Par exemple, 50 secondes en arrière par rapport à "now"
+
+                    //KeyValueIterator<Windowed<String>,Long> fetchAlls = windowStore.fetchAll(from,now);
+                    WindowStoreIterator<Long> fetch = windowStore.fetch(page,from,now);
+                    while (fetch.hasNext()){
+                        KeyValue<Long, Long> next = fetch.next();
+                        stringLongMap.put(page,next.value);
                     }
 
                     return stringLongMap;
