@@ -47,5 +47,21 @@ en temps réel.
 
 ![image](https://github.com/salma-SABROU/KAFKA-TP1/assets/129564311/ec6f117f-a501-4126-a357-294ad36d53fe)
 
+# Docker 
+L'utilisation de Docker avec Apache Kafka offre une solution efficace et flexible pour le déploiement et la gestion des clusters Kafka. En encapsulant les composants de Kafka, tels que les brokers, les producteurs et les consommateurs, dans des conteneurs Docker, on bénéficie d'une isolation des environnements, d'une portabilité accrue et d'une gestion simplifiée. Cette approche permet de déployer rapidement des clusters Kafka, de les dimensionner en fonction des besoins, et de les mettre à l'échelle de manière dynamique. De plus, Docker facilite la gestion des dépendances et des mises à jour, tout en garantissant la cohérence entre les environnements de développement, de test et de production. En résumé, l'utilisation de Docker avec Apache Kafka offre une solution agile et robuste pour la mise en place de systèmes de traitement de données en temps réel, améliorant ainsi la gestion des flux de données dans des environnements complexes et dynamiques.
+
+### l'utilisation du Docker 
+  - docker-compose up
+![image](https://github.com/salma-SABROU/KAFKA-TP1/assets/129564311/985669b9-c075-482b-b975-bd8e9830c90f)
+
+  - docker exec --interactive --tty broker kafka-console-consumer --bootstrap-server broker:9092 --topic R2
+![image](https://github.com/salma-SABROU/KAFKA-TP1/assets/129564311/7739ef96-859b-40a1-83ab-c82a86d24ffb)
+
+  - docker exec --interactive --tty broker kafka-console-producer --bootstrap-server broker:9092 --topic Test2
+![image](https://github.com/salma-SABROU/KAFKA-TP1/assets/129564311/f8d7822b-c25b-40ab-9701-f7111f17dc68)
+
 # TP :
 ![image](https://github.com/salma-SABROU/KAFKA-TP1/assets/129564311/88096c14-8308-4012-8fdd-6d6068b00075)
+
+![image](https://github.com/salma-SABROU/KAFKA-TP1/assets/129564311/bbdbc0f5-fddf-46ce-b423-cca5323ff442)
+
